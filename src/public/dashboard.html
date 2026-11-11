@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Миний хүсэлтүүд — ОДБ систем</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <span class="brand">ОДБ систем</span>
+    <span id="userName" class="muted"></span>
+    <button id="logoutBtn" class="btn btn-link" type="button">Гарах</button>
+  </header>
+
+  <main class="container">
+    <div id="flash" class="alert alert-success" role="status" hidden></div>
+
+    <div class="row-between">
+      <h1>Миний хүсэлтүүд</h1>
+      <a id="newApplication" class="btn btn-primary" href="/apply.html">+ Шинэ хүсэлт илгээх</a>
+    </div>
+
+    <p id="emptyState" class="card muted" hidden></p>
+
+    <div class="card table-wrap" id="tableCard" hidden>
+      <table>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Байр</th>
+            <th>Хичээлийн жил</th>
+            <th>Илгээсэн огноо</th>
+            <th>Төлөв</th>
+          </tr>
+        </thead>
+        <tbody id="applicationRows"></tbody>
+      </table>
+    </div>
+
+    <p id="staffNote" class="card muted" hidden>
+      Ажилтны хүсэлт хянах хэсэг (US-05) дараагийн Sprint-д хэрэгжинэ.
+    </p>
+  </main>
+  <script src="/js/api.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Шинэ хүсэлт — ОДБ систем</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <span class="brand">ОДБ систем</span>
+    <span id="userName" class="muted"></span>
+    <a class="btn btn-link" href="/dashboard.html">← Миний хүсэлтүүд</a>
+  </header>
+
+  <main class="container narrow">
+    <h1>Дотуур байранд суух хүсэлт</h1>
+    <p class="muted">Бүх талбарыг бөглөнө үү. Нэг хичээлийн жилд нэг удаа хүсэлт илгээх боломжтой.</p>
+
+    <div id="alert" class="alert alert-error" role="alert" hidden></div>
+
+    <form id="applyForm" class="card" novalidate>
+      <label for="dormId">Байр</label>
+      <select id="dormId" name="dormId">
+        <option value="">— Байраа сонгоно уу —</option>
+      </select>
+      <p class="field-error" data-for="dormId"></p>
+
+      <label for="phone">Утасны дугаар</label>
+      <input id="phone" name="phone" type="tel" inputmode="numeric" maxlength="8" placeholder="99112233">
+      <p class="field-error" data-for="phone"></p>
+
+      <label for="emergencyName">Яаралтай үед холбогдох хүний нэр</label>
+      <input id="emergencyName" name="emergencyName" type="text" maxlength="60" placeholder="Болд">
+      <p class="field-error" data-for="emergencyName"></p>
+
+      <label for="emergencyPhone">Яаралтай үед холбогдох утас</label>
+      <input id="emergencyPhone" name="emergencyPhone" type="tel" inputmode="numeric" maxlength="8" placeholder="88112233">
+      <p class="field-error" data-for="emergencyPhone"></p>
+
+      <label for="reason">Байранд суух шалтгаан</label>
+      <textarea id="reason" name="reason" rows="4" maxlength="500" placeholder="Жишээ: Хөдөө орон нутгаас ирсэн тул..."></textarea>
+      <p class="field-error" data-for="reason"></p>
+
+      <button type="submit" class="btn btn-primary">Илгээх</button>
+    </form>
+  </main>
+  <script src="/js/api.js"></script>
+  <script src="/js/apply.js"></script>
+</body>
+</html>

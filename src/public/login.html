@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Нэвтрэх — ОДБ систем</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="auth-page">
+  <main class="card auth-card">
+    <h1>Оюутны дотуур байр</h1>
+    <p class="muted">Бүртгэлийн системд нэвтрэх</p>
+
+    <div id="alert" class="alert alert-error" role="alert" hidden></div>
+
+    <form id="loginForm" novalidate>
+      <label for="username">Оюутны код / нэвтрэх нэр</label>
+      <input id="username" name="username" type="text" autocomplete="username" placeholder="B221910001" maxlength="30">
+      <p class="field-error" data-for="username"></p>
+
+      <label for="password">Нууц үг</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" maxlength="128">
+      <p class="field-error" data-for="password"></p>
+
+      <button type="submit" class="btn btn-primary">Нэвтрэх</button>
+    </form>
+  </main>
+  <script src="/js/api.js"></script>
+  <script src="/js/login.js"></script>
+</body>
+</html>
