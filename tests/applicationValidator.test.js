@@ -5,10 +5,11 @@ const {
 const { currentAcademicYear } = require('../src/services/applicationService');
 const { VALID_APPLICATION } = require('./helpers');
 
-function parsePositiveInt(value) {
-  const n = Number(value);
-  return Number.isInteger(n) && n > 0 ? n : NaN;
-});
+describe('parsePositiveInt', () => {
+  test('бүхэл эерэг тоог хүлээн авна', () => {
+    expect(parsePositiveInt(3)).toBe(3);
+    expect(parsePositiveInt('12')).toBe(12);
+  });
 
   test.each([true, [1], 0, -1, 1.5, 'abc', '01', null])(
     'буруу утга %p -> NaN',
