@@ -64,4 +64,70 @@ function validateApplication(body) {
   return { errors: null, data: { dormId, phone, emergencyName, emergencyPhone, reason } };
 }
 
-module.exports = { validateApplication, parsePositiveInt, REASON_MIN, REASON_MAX };
+const EDITABLE_FIELDS = ['dormId', 'phone', 'emergencyName', 'emergencyPhone', 'reason'];
+
+/**
+ * PATCH (оюутан хүсэлтээ засах): зөвхөн өгсөн талбарыг одоогийн утга дээр давхарлаж,
+ * үр дүнг бүтнээр нь validateApplication-оор шалгана (жишээ нь утас ≠ яаралтай утас).
+ * @param {object} body     хүсэлтийн body
+ * @param {object} current  одоогийн утгууд { dormId, phone, emergencyName, emergencyPhone, reason }
+ */
+function validateApplicationUpdate(body, current) {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    return { errors: { form: 'Өгөгдөл буруу байна' }, data: null };
+  }
+  const changed = EDITABLE_FIELDS.filter((f) => Object.prototype.hasOwnProperty.call(body, f));
+  if (changed.length === 0) {
+    return { errors: { form: 'Өөрчлөх талбар өгөгдөөгүй байна' }, data: null };
+  }
+  const merged = { ...current };
+  changed.forEach((f) => { merged[f] = body[f]; });
+  const result = validateApplication(merged);
+  if (result.errors) {
+    // Зөвхөн өөрчилсөн талбарын алдааг буцаана
+    const errors = {};
+    Object.entries(result.errors).forEach(([k, v]) => { if (changed.includes(k)) errors[k] = v; });
+    return { errors: Object.keys(errors).length ? errors : result.errors, data: null };
+  }
+  return { errors: null, data: result.data, changed };
+}
+
+const REVIEW_STATUSES = ['APPROVED', 'REJECTED'];
+const NOTE_MAX = 300;
+
+/**
+ * PATCH (ажилтан шийдвэрлэх): status нь APPROVED эсвэл REJECTED.
+ * Татгалзах үед шалтгаан (reviewNote) заавал.
+ */
+function validateReview(body) {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    return { errors: { form: 'Өгөгдөл буруу байна' }, data: null };
+  }
+  const errors = {};
+  const status = typeof body.status === 'string' ? body.status.trim().toUpperCase() : '';
+  const reviewNote = asTrimmedString(body.reviewNote);
+
+  if (!REVIEW_STATUSES.includes(status)) {
+    errors.status = 'Шийдвэр нь APPROVED эсвэл REJECTED байх ёстой';
+  }
+  if (status === 'REJECTED' && !reviewNote) {
+    errors.reviewNote = 'Татгалзсан шалтгаанаа бичнэ үү';
+  } else if (reviewNote && HTML_RE.test(reviewNote)) {
+    errors.reviewNote = 'HTML код болон тусгай тэмдэгт оруулах боломжгүй';
+  } else if (reviewNote.length > NOTE_MAX) {
+    errors.reviewNote = `Тайлбар ${NOTE_MAX} тэмдэгтээс ихгүй байна`;
+  }
+
+  if (Object.keys(errors).length > 0) return { errors, data: null };
+  return { errors: null, data: { status, reviewNote: reviewNote || null } };
+}
+
+module.exports = {
+  validateApplication,
+  validateApplicationUpdate,
+  validateReview,
+  parsePositiveInt,
+  EDITABLE_FIELDS,
+  REASON_MIN,
+  REASON_MAX,
+};

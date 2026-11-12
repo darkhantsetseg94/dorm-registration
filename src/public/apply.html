@@ -14,8 +14,8 @@
   </header>
 
   <main class="container narrow">
-    <h1>Дотуур байранд суух хүсэлт</h1>
-    <p class="muted">Бүх талбарыг бөглөнө үү. Нэг хичээлийн жилд нэг удаа хүсэлт илгээх боломжтой.</p>
+    <h1 id="pageTitle">Дотуур байранд суух хүсэлт</h1>
+    <p class="muted" id="pageHint">Бүх талбарыг бөглөнө үү. Нэг хичээлийн жилд нэг удаа хүсэлт илгээх боломжтой.</p>
 
     <div id="alert" class="alert alert-error" role="alert" hidden></div>
 
@@ -42,7 +42,7 @@
       <textarea id="reason" name="reason" rows="4" maxlength="500" placeholder="Жишээ: Хөдөө орон нутгаас ирсэн тул..."></textarea>
       <p class="field-error" data-for="reason"></p>
 
-      <button type="submit" class="btn btn-primary">Илгээх</button>
+      <button type="submit" class="btn btn-primary" id="submitBtn">Илгээх</button>
     </form>
   </main>
   <script src="/js/api.js"></script>

@@ -11,10 +11,12 @@ async function apiRequest(url, options = {}) {
     credentials: 'same-origin',
   });
   let data = {};
-  try {
-    data = await response.json();
-  } catch (e) {
-    data = {};
+  if (response.status !== 204) {
+    try {
+      data = await response.json();
+    } catch (e) {
+      data = {};
+    }
   }
   if (!response.ok) {
     const err = new Error(data.error || 'Алдаа гарлаа');
