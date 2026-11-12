@@ -1,5 +1,7 @@
 const {
   validateApplication,
+  validateApplicationUpdate,
+  validateReview,
   parsePositiveInt,
 } = require('../src/validators/applicationValidator');
 const { currentAcademicYear } = require('../src/services/applicationService');
@@ -23,12 +25,12 @@ describe('validateApplication', () => {
   test('зөв өгөгдөлд алдаагүй', () => {
     const { errors, data } = validateApplication(VALID_APPLICATION);
     expect(errors).toBeNull();
-    expect(data.dormId).toBe(1);
+    expect(data).toEqual(VALID_APPLICATION);
   });
 
-  test('хоосон body-д 5 талбарын алдаа', () => {
+  test('хоосон body-д 4 талбарын алдаа', () => {
     const { errors } = validateApplication({});
-    expect(Object.keys(errors)).toHaveLength(5);
+    expect(Object.keys(errors)).toHaveLength(4);
   });
 
   test('массив эсвэл null body-г татгалзана', () => {
@@ -53,6 +55,41 @@ describe('validateApplication', () => {
     const { data } = validateApplication({ ...VALID_APPLICATION, studentId: 2, status: 'APPROVED' });
     expect(data).not.toHaveProperty('studentId');
     expect(data).not.toHaveProperty('status');
+  });
+});
+
+describe('validateApplicationUpdate (Лаб 11)', () => {
+  const current = { ...VALID_APPLICATION };
+
+  test('зөвхөн өгсөн талбарыг сольж, бусдыг хэвээр үлдээнэ', () => {
+    const { errors, data, changed } = validateApplicationUpdate({ phone: '95556677' }, current);
+    expect(errors).toBeNull();
+    expect(changed).toEqual(['phone']);
+    expect(data).toMatchObject({ phone: '95556677', reason: current.reason });
+  });
+
+  test('яаралтай утсыг өөрийн утастай ижил болгох → алдаа', () => {
+    const { errors } = validateApplicationUpdate({ emergencyPhone: current.phone }, current);
+    expect(errors).toHaveProperty('emergencyPhone');
+  });
+
+  test('зөвшөөрөгдөөгүй талбар л өгвөл → алдаа', () => {
+    const { errors } = validateApplicationUpdate({ status: 'APPROVED' }, current);
+    expect(errors).toHaveProperty('form');
+  });
+});
+
+describe('validateReview (Лаб 11)', () => {
+  test('APPROVED шалтгаангүй хүлээн авна', () => {
+    expect(validateReview({ status: 'approved' }).data).toEqual({ status: 'APPROVED', reviewNote: null });
+  });
+
+  test.each([
+    [{ status: 'CANCELLED' }, 'status'],
+    [{ status: 'REJECTED' }, 'reviewNote'],
+    [{ status: 'REJECTED', reviewNote: '<b>no</b>' }, 'reviewNote'],
+  ])('%j → %s алдаа', (body, field) => {
+    expect(validateReview(body).errors).toHaveProperty(field);
   });
 });
 

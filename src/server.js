@@ -3,8 +3,8 @@ const { createDatabase } = require('./db/database');
 const { createApp } = require('./app');
 
 const db = createDatabase(config.dbFile);
-const dormCount = db.prepare('SELECT COUNT(*) AS n FROM dormitories').get().n;
-if (dormCount === 0) {
+const userCount = db.prepare('SELECT COUNT(*) AS n FROM users').get().n;
+if (userCount === 0) {
   console.warn('Анхааруулга: өгөгдлийн сан хоосон байна. Эхлээд "npm run seed" ажиллуулна уу.');
 }
 

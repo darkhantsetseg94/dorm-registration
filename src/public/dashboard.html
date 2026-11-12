@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Миний хүсэлтүүд — ОДБ систем</title>
+  <title>Хүсэлтүүд — ОДБ систем</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -13,34 +13,70 @@
     <button id="logoutBtn" class="btn btn-link" type="button">Гарах</button>
   </header>
 
-  <main class="container">
+  <main class="container wide">
     <div id="flash" class="alert alert-success" role="status" hidden></div>
+    <div id="error" class="alert alert-error" role="alert" hidden></div>
 
-    <div class="row-between">
-      <h1>Миний хүсэлтүүд</h1>
-      <a id="newApplication" class="btn btn-primary" href="/apply.html">+ Шинэ хүсэлт илгээх</a>
-    </div>
+    <!-- Оюутан: өөрийн хүсэлтүүд (US-01, US-02) -->
+    <section id="studentSection" hidden>
+      <div class="row-between">
+        <h1>Миний хүсэлтүүд</h1>
+        <a class="btn btn-primary" href="/apply.html">+ Шинэ хүсэлт илгээх</a>
+      </div>
 
-    <p id="emptyState" class="card muted" hidden></p>
+      <p id="emptyState" class="card muted" hidden></p>
 
-    <div class="card table-wrap" id="tableCard" hidden>
-      <table>
-        <thead>
-          <tr>
-            <th>№</th>
-            <th>Байр</th>
-            <th>Хичээлийн жил</th>
-            <th>Илгээсэн огноо</th>
-            <th>Төлөв</th>
-          </tr>
-        </thead>
-        <tbody id="applicationRows"></tbody>
-      </table>
-    </div>
+      <div class="card table-wrap" id="tableCard" hidden>
+        <table>
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Хичээлийн жил</th>
+              <th>Илгээсэн огноо</th>
+              <th>Төлөв</th>
+              <th>Тайлбар</th>
+              <th>Үйлдэл</th>
+            </tr>
+          </thead>
+          <tbody id="applicationRows"></tbody>
+        </table>
+      </div>
+    </section>
 
-    <p id="staffNote" class="card muted" hidden>
-      Ажилтны хүсэлт хянах хэсэг (US-05) дараагийн Sprint-д хэрэгжинэ.
-    </p>
+    <!-- Ажилтан: ирсэн хүсэлтүүдийг шийдвэрлэх (US-05) -->
+    <section id="staffSection" hidden>
+      <div class="row-between">
+        <h1>Ирсэн хүсэлтүүд</h1>
+        <label class="inline-label">Төлөв:
+          <select id="statusFilter">
+            <option value="">Бүгд</option>
+            <option value="PENDING" selected>Хүлээгдэж буй</option>
+            <option value="APPROVED">Зөвшөөрсөн</option>
+            <option value="REJECTED">Татгалзсан</option>
+            <option value="CANCELLED">Цуцалсан</option>
+          </select>
+        </label>
+      </div>
+
+      <p id="staffEmpty" class="card muted" hidden>Энэ төлөвтэй хүсэлт байхгүй байна</p>
+
+      <div class="card table-wrap" id="staffTableCard" hidden>
+        <table>
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Оюутан</th>
+              <th>Утас</th>
+              <th>Шалтгаан</th>
+              <th>Илгээсэн</th>
+              <th>Төлөв</th>
+              <th>Шийдвэр</th>
+            </tr>
+          </thead>
+          <tbody id="staffRows"></tbody>
+        </table>
+      </div>
+    </section>
   </main>
   <script src="/js/api.js"></script>
   <script src="/js/dashboard.js"></script>

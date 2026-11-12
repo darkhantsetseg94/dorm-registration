@@ -16,7 +16,7 @@ describe('US-01: Дотуур байранд суух хүсэлт илгээх'
     expect(res.status).toBe(201);
     expect(res.body.message).toBe('Хүсэлт амжилттай илгээгдлээ');
     expect(res.body.application).toMatchObject({
-      dormName: '1-р байр',
+      phone: VALID_APPLICATION.phone,
       status: 'PENDING',
       statusLabel: 'Хүлээгдэж буй',
     });
@@ -53,23 +53,23 @@ describe('US-01: Дотуур байранд суух хүсэлт илгээх'
     expect(own.status).toBe(200);
   });
 
-  test('TC05: хоосон form-д 5 талбарын алдаа', async () => {
+  test('TC05: хоосон form-д 4 талбарын алдаа', async () => {
     const agent = await loginAs(app, 'B221910001');
     const res = await agent.post('/api/applications').send({});
 
     expect(res.status).toBe(400);
     expect(Object.keys(res.body.details).sort()).toEqual(
-      ['dormId', 'emergencyName', 'emergencyPhone', 'phone', 'reason']
+      ['emergencyName', 'emergencyPhone', 'phone', 'reason']
     );
   });
 
   test.each([
     ['утас 5 оронтой', 'phone', { phone: '99112' }],
     ['утсанд үсэг', 'phone', { phone: '9911abcd' }],
-    ['байхгүй байр', 'dormId', { dormId: 999 }],
-    ['dormId текст', 'dormId', { dormId: 'abc' }],
-    ['dormId = true', 'dormId', { dormId: true }],
-    ['dormId = [1]', 'dormId', { dormId: [1] }],
+    ['утас 9 оронтой', 'phone', { phone: '991122334' }],
+    ['утас массив', 'phone', { phone: ['99112233'] }],
+    ['нэрэнд HTML', 'emergencyName', { emergencyName: 'Болд<b>' }],
+    ['шалтгаан зөвхөн хоосон зай', 'reason', { reason: '            ' }],
     ['нэрэнд тоо', 'emergencyName', { emergencyName: 'Bat123' }],
     ['өөрийн утастай ижил', 'emergencyPhone', { emergencyPhone: '99112233' }],
     ['шалтгаан богино', 'reason', { reason: 'богино' }],
@@ -96,7 +96,7 @@ describe('US-01: Дотуур байранд суух хүсэлт илгээх'
     const first = await agent.post('/api/applications').send(VALID_APPLICATION);
     expect(first.status).toBe(201);
 
-    const second = await agent.post('/api/applications').send({ ...VALID_APPLICATION, dormId: 3 });
+    const second = await agent.post('/api/applications').send({ ...VALID_APPLICATION, phone: '95556677' });
     expect(second.status).toBe(409);
     expect(second.body.error).toMatch(/хүсэлт илгээсэн байна/);
   });
@@ -137,17 +137,16 @@ describe('US-01: Дотуур байранд суух хүсэлт илгээх'
     expect(res.status).toBe(403);
   });
 
-  test('TC17: хүйсэнд тохирохгүй байр сонгоход 400', async () => {
-    const agent = await loginAs(app, 'B221910001'); // эрэгтэй оюутан
+  test('TC17: нэг байртай тул body дахь dormId-г үл тооно (хуучин клиент)', async () => {
+    const agent = await loginAs(app, 'B221910001');
     const res = await agent.post('/api/applications').send({ ...VALID_APPLICATION, dormId: 2 });
-    expect(res.status).toBe(400);
-    expect(res.body.details.dormId).toBe('Энэ байр таны хүйсэнд тохирохгүй байна');
+    expect(res.status).toBe(201);
+    expect(res.body.application).not.toHaveProperty('dormId');
   });
 
-  test('Оюутанд зөвхөн өөрийн хүйсийн болон холимог байр харагдана', async () => {
+  test('Байр сонгох /api/dormitories endpoint байхгүй (404)', async () => {
     const agent = await loginAs(app, 'B221910001');
     const res = await agent.get('/api/dormitories');
-    expect(res.status).toBe(200);
-    expect(res.body.dormitories.map((d) => d.name)).toEqual(['1-р байр', '3-р байр']);
+    expect(res.status).toBe(404);
   });
 });

@@ -1,6 +1,6 @@
 # Оюутны дотуур байрны бүртгэлийн систем (ОДБ)
 
-![CI](https://github.com/<darkhantsetseg94>/dorm-registration/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/darkhantsetseg94/dorm-registration/actions/workflows/ci.yml/badge.svg)
 
 F.CSA316 — Программ хангамж хөгжүүлэлтийн процесс · 4-р баг (Н. Батболд, О. Баттөмөр, А. Дарханцэцэг)
 
@@ -8,8 +8,11 @@ F.CSA316 — Программ хангамж хөгжүүлэлтийн проц
 
 - **Лаб 5 — US-01:** оюутан системд нэвтэрч, дотуур байранд суух хүсэлтээ цахимаар илгээх, илгээсэн хүсэлтээ «Хүлээгдэж буй» төлөвтэйгөөр харах.
 - **Лаб 8 — Continuous Integration:** push болон pull request бүрд GitHub Actions автоматаар build хийж, тест ажиллуулна.
+- **Лаб 11 — REST API / CRUD:** оюутан хүсэлтээ засах (PATCH), цуцлах (DELETE → CANCELLED); ажилтан ирсэн хүсэлтийг жагсааж, зөвшөөрөх / татгалзах (US-05). Backend-ийг route → controller → service → model давхаргад хуваасан.
 
-Лаб бүрийн эцсийн төлөвийг `lab5`, `lab8` Git tag-аар тэмдэглэнэ.
+Лаб бүрийн эцсийн төлөвийг `lab5`, `lab8`, `lab11` Git tag-аар тэмдэглэнэ.
+
+Дотуур байр **нэг байртай** тул хүсэлт илгээхэд байр сонгохгүй; оюутан утас, яаралтай үед холбогдох хүн, шалтгаанаа бөглөнө.
 
 ## Технологи
 
@@ -27,12 +30,14 @@ F.CSA316 — Программ хангамж хөгжүүлэлтийн проц
 ```bash
 npm install
 cp .env.example .env        # SESSION_SECRET, DEMO_PASSWORD-ийг өөрчилнө
-npm run seed                # 3 байр, 3 demo хэрэглэгч үүсгэнэ
+npm run seed                # 3 demo хэрэглэгч үүсгэнэ
 npm start                   # http://localhost:3000
 npm test                    # автомат тестүүд
 ```
 
-Windows дээр `cp` ажиллахгүй бол `.env.example`-ийг хуулж `.env` нэртэй болгоно.
+Windows PowerShell дээр `cp`-ийн оронд `copy .env.example .env` ашиглана.
+
+> **Өмнөх хувилбарын өгөгдлийн сантай бол:** хүснэгтийн бүтэц өөрчлөгдсөн (олон байр → нэг байр) тул `data` хавтсыг устгаад `npm run seed`-ийг дахин ажиллуулна. Сервер хуучин бүтэцтэй өгөгдлийн санг илрүүлбэл энэ тухай мессеж гаргана.
 
 Demo хэрэглэгч (нууц үг нь `.env` доторх `DEMO_PASSWORD`):
 
@@ -41,8 +46,6 @@ Demo хэрэглэгч (нууц үг нь `.env` доторх `DEMO_PASSWORD`)
 | B221910001 | Эрэгтэй оюутан |
 | B221910002 | Эмэгтэй оюутан |
 | staff01 | Ажилтан |
-
-Байр: 1-р байр (эрэгтэй), 2-р байр (эмэгтэй), 3-р байр (холимог).
 
 ## Кодын бүтэц
 
@@ -55,8 +58,10 @@ src/
 ├── db/database.js          SQLite холболт, schema
 ├── middleware/             requireAuth, requireRole, errorHandler
 ├── validators/             Нэвтрэх ба хүсэлтийн form шалгах
-├── services/               Бизнес логик, SQL query
-├── routes/                 /api/auth/*, /api/applications/*
+├── routes/                 URL + method → middleware, controller
+├── controllers/            HTTP хүсэлт → service → JSON хариу
+├── services/               Бизнесийн дүрэм (эрх, төлөвийн шилжилт)
+├── models/                 SQL query (prepared statement)
 └── public/                 login, dashboard, apply хуудас
 database/                   schema.sql, seed.js
 tests/                      Jest тестүүд
@@ -70,10 +75,15 @@ tests/                      Jest тестүүд
 | POST | /api/auth/login | Бүгд | Нэвтрэх |
 | POST | /api/auth/logout | Нэвтэрсэн | Гарах |
 | GET | /api/auth/me | Нэвтэрсэн | Одоогийн хэрэглэгч |
-| GET | /api/dormitories | Нэвтэрсэн | Хүйсэнд тохирох байрууд |
-| POST | /api/applications | student | Хүсэлт илгээх (US-01) |
+| GET | /api/applications | Нэвтэрсэн | Оюутан: өөрийнх · Ажилтан: бүгд (`?status=PENDING`) |
 | GET | /api/applications/my | student | Өөрийн хүсэлтүүд |
-| GET | /api/applications/:id | Эзэмшигч, staff | Хүсэлтийн дэлгэрэнгүй |
+| POST | /api/applications | student | Хүсэлт илгээх (US-01) → 201 |
+| GET | /api/applications/:id | Эзэмшигч, staff | Хүсэлтийн дэлгэрэнгүй → 200 / 404 |
+| PATCH | /api/applications/:id | Эзэмшигч | PENDING хүсэлтийн талбар засах → 200 |
+| PATCH | /api/applications/:id | staff | `{"status":"APPROVED"}` эсвэл `{"status":"REJECTED","reviewNote":"…"}` (US-05) → 200 |
+| DELETE | /api/applications/:id | Эзэмшигч | PENDING хүсэлтийг цуцлах (CANCELLED) → 204 |
+
+Хүсэлтийн төлөв: `PENDING` → `APPROVED` / `REJECTED` (ажилтан) эсвэл `CANCELLED` (оюутан). Шийдвэрлэгдсэн хүсэлтийг засах, цуцлахад `409 Conflict`. Цуцалсан хүсэлт тооцогдохгүй тул тухайн хичээлийн жилд дахин хүсэлт илгээх боломжтой.
 
 ## Security
 

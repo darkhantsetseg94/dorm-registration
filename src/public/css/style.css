@@ -39,6 +39,7 @@ h1 { font-size: 1.5rem; margin: 0 0 0.5rem; }
 
 .container { max-width: 960px; margin: 2rem auto; padding: 0 16px; }
 .container.narrow { max-width: 560px; }
+.container.wide { max-width: 1240px; }
 
 .card {
   background: var(--card);
@@ -88,7 +89,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--primary); o
 
 .table-wrap { overflow-x: auto; padding: 0; }
 table { width: 100%; border-collapse: collapse; }
-th, td { text-align: left; padding: 0.7rem 1rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+th, td { text-align: left; padding: 0.6rem 0.8rem; vertical-align: middle; border-bottom: 1px solid var(--border); white-space: nowrap; }
 th { background: #f0f3f7; font-size: 0.85rem; color: var(--muted); }
 tr:last-child td { border-bottom: none; }
 
@@ -96,3 +97,13 @@ tr:last-child td { border-bottom: none; }
 .badge-PENDING { background: var(--warning-bg); color: var(--warning); }
 .badge-APPROVED { background: var(--success-bg); color: var(--success); }
 .badge-REJECTED { background: var(--error-bg); color: var(--error); }
+.badge-CANCELLED { background: #eceff3; color: var(--muted); }
+
+.btn-sm { padding: 0.3rem 0.7rem; font-size: 0.85rem; margin-right: 0.35rem; }
+.btn-outline { border-color: var(--primary); color: var(--primary); background: #fff; }
+.btn-success { background: var(--success); color: #fff; }
+.btn-danger { background: #fff; border-color: var(--error); color: var(--error); }
+.btn-danger:hover { background: var(--error-bg); }
+td.wrap { white-space: normal; min-width: 220px; max-width: 360px; }
+.inline-label { display: flex; align-items: center; gap: 0.5rem; margin: 0; font-weight: 600; }
+.inline-label select { width: auto; margin: 0; }

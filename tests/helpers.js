@@ -7,7 +7,6 @@ const config = require('../src/config');
 const PASSWORD = 'TestPass2026!';
 
 const VALID_APPLICATION = {
-  dormId: 1, // 1-р байр (эрэгтэй)
   phone: '99112233',
   emergencyName: 'Болд',
   emergencyPhone: '88112233',

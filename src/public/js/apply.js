@@ -1,19 +1,30 @@
 const applyForm = document.getElementById('applyForm');
 const applyAlert = document.getElementById('alert');
+const FIELDS = ['phone', 'emergencyName', 'emergencyPhone', 'reason'];
 
-async function loadDormitories() {
-  const select = document.getElementById('dormId');
-  try {
-    const { dormitories } = await apiRequest('/api/dormitories');
-    dormitories.forEach((dorm) => {
-      const option = document.createElement('option');
-      option.value = String(dorm.id);
-      option.textContent = dorm.genderType === 'mixed' ? `${dorm.name} (холимог)` : dorm.name;
-      select.appendChild(option);
-    });
-  } catch (err) {
-    showAlert(applyAlert, err.message);
+// ?id=5 байвал засах горим (PATCH), үгүй бол шинэ хүсэлт (POST)
+const editId = new URLSearchParams(window.location.search).get('id');
+const isEdit = editId !== null && /^[1-9]\d{0,9}$/.test(editId);
+
+/** Засах горимд одоогийн утгуудыг form-д бөглөнө. */
+async function loadForEdit() {
+  const { application } = await apiRequest(`/api/applications/${editId}`);
+  if (application.status !== 'PENDING') {
+    throw new Error(`Зөвхөн "Хүлээгдэж буй" хүсэлтийг засах боломжтой (одоо: ${application.statusLabel})`);
   }
+  document.getElementById('pageTitle').textContent = `Хүсэлт #${application.id} засах`;
+  document.getElementById('pageHint').textContent = 'Өөрчлөх талбаруудаа засаад «Хадгалах» товчийг дарна уу.';
+  document.getElementById('submitBtn').textContent = 'Хадгалах';
+  applyForm.phone.value = application.phone;
+  applyForm.emergencyName.value = application.emergencyName;
+  applyForm.emergencyPhone.value = application.emergencyPhone;
+  applyForm.reason.value = application.reason;
+}
+
+function formData() {
+  const data = {};
+  FIELDS.forEach((f) => { data[f] = applyForm[f].value.trim(); });
+  return data;
 }
 
 applyForm.addEventListener('submit', async (event) => {
@@ -21,20 +32,15 @@ applyForm.addEventListener('submit', async (event) => {
   clearFieldErrors(applyForm);
   showAlert(applyAlert, '');
 
-  const button = applyForm.querySelector('button');
+  const button = document.getElementById('submitBtn');
   button.disabled = true;
   try {
-    const result = await apiRequest('/api/applications', {
-      method: 'POST',
-      body: {
-        dormId: applyForm.dormId.value,
-        phone: applyForm.phone.value.trim(),
-        emergencyName: applyForm.emergencyName.value.trim(),
-        emergencyPhone: applyForm.emergencyPhone.value.trim(),
-        reason: applyForm.reason.value.trim(),
-      },
-    });
-    sessionStorage.setItem('flash', `${result.message} (хүсэлт #${result.application.id})`);
+    const result = isEdit
+      ? await apiRequest(`/api/applications/${editId}`, { method: 'PATCH', body: formData() })
+      : await apiRequest('/api/applications', { method: 'POST', body: formData() });
+    try {
+      sessionStorage.setItem('flash', `${result.message} (хүсэлт #${result.application.id})`);
+    } catch (e) { /* sessionStorage ашиглах боломжгүй */ }
     window.location.href = '/dashboard.html';
   } catch (err) {
     if (err.status === 401) {
@@ -55,5 +61,11 @@ applyForm.addEventListener('submit', async (event) => {
     window.location.href = '/dashboard.html';
     return;
   }
-  loadDormitories();
+  if (!isEdit) return;
+  try {
+    await loadForEdit();
+  } catch (err) {
+    showAlert(applyAlert, err.message);
+    applyForm.hidden = true;
+  }
 })();
