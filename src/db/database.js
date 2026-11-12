@@ -3,13 +3,16 @@ const path = require('path');
 const Database = require('better-sqlite3');
 
 const SCHEMA_PATH = path.join(__dirname, '..', '..', 'database', 'schema.sql');
+const SCHEMA_VERSION = 3; // database/schema.sql доторх PRAGMA user_version-тэй ижил
 
 /**
- * Лаб 5-ын хуучин бүтэцтэй (updated_at баганагүй) өгөгдлийн сан эсэхийг шалгана.
+ * Өмнөх бүтэцтэй (жишээ нь олон байртай, dorm_id баганатай) өгөгдлийн сан эсэхийг шалгана.
  */
 function isOutdated(db) {
-  const columns = db.prepare('PRAGMA table_info(applications)').all().map((c) => c.name);
-  return columns.length > 0 && !columns.includes('updated_at');
+  const hasTables = db.prepare(
+    "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'applications'"
+  ).get();
+  return Boolean(hasTables) && db.pragma('user_version', { simple: true }) !== SCHEMA_VERSION;
 }
 
 /**
@@ -35,4 +38,4 @@ function createDatabase(filename = ':memory:') {
   return db;
 }
 
-module.exports = { createDatabase };
+module.exports = { createDatabase, SCHEMA_VERSION };

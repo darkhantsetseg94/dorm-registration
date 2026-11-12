@@ -9,8 +9,6 @@ function createApplicationRoutes(db) {
   const router = express.Router();
   const ctrl = createApplicationController(db);
 
-  router.get('/dormitories', requireAuth, ctrl.listDormitories);
-
   router.get('/applications', requireAuth, ctrl.list);
   router.get('/applications/my', requireRole('student'), ctrl.listMy);
   router.post('/applications', requireRole('student'), ctrl.create);

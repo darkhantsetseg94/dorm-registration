@@ -1,21 +1,10 @@
 const applyForm = document.getElementById('applyForm');
 const applyAlert = document.getElementById('alert');
-const FIELDS = ['dormId', 'phone', 'emergencyName', 'emergencyPhone', 'reason'];
+const FIELDS = ['phone', 'emergencyName', 'emergencyPhone', 'reason'];
 
 // ?id=5 байвал засах горим (PATCH), үгүй бол шинэ хүсэлт (POST)
 const editId = new URLSearchParams(window.location.search).get('id');
 const isEdit = editId !== null && /^[1-9]\d{0,9}$/.test(editId);
-
-async function loadDormitories() {
-  const select = document.getElementById('dormId');
-  const { dormitories } = await apiRequest('/api/dormitories');
-  dormitories.forEach((dorm) => {
-    const option = document.createElement('option');
-    option.value = String(dorm.id);
-    option.textContent = dorm.genderType === 'mixed' ? `${dorm.name} (холимог)` : dorm.name;
-    select.appendChild(option);
-  });
-}
 
 /** Засах горимд одоогийн утгуудыг form-д бөглөнө. */
 async function loadForEdit() {
@@ -26,7 +15,6 @@ async function loadForEdit() {
   document.getElementById('pageTitle').textContent = `Хүсэлт #${application.id} засах`;
   document.getElementById('pageHint').textContent = 'Өөрчлөх талбаруудаа засаад «Хадгалах» товчийг дарна уу.';
   document.getElementById('submitBtn').textContent = 'Хадгалах';
-  applyForm.dormId.value = String(application.dormId);
   applyForm.phone.value = application.phone;
   applyForm.emergencyName.value = application.emergencyName;
   applyForm.emergencyPhone.value = application.emergencyPhone;
@@ -73,11 +61,11 @@ applyForm.addEventListener('submit', async (event) => {
     window.location.href = '/dashboard.html';
     return;
   }
+  if (!isEdit) return;
   try {
-    await loadDormitories();
-    if (isEdit) await loadForEdit();
+    await loadForEdit();
   } catch (err) {
     showAlert(applyAlert, err.message);
-    if (isEdit) applyForm.hidden = true;
+    applyForm.hidden = true;
   }
 })();

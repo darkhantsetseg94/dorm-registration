@@ -1,11 +1,11 @@
 const { AppError } = require('../errors');
 const { createApplicationService } = require('../services/applicationService');
-
-const ID_RE = /^[1-9]\d{0,9}$/;
+const { parsePositiveInt } = require('../validators/applicationValidator');
 
 function parseId(req) {
-  if (!ID_RE.test(req.params.id)) throw new AppError(400, 'Хүсэлтийн дугаар буруу байна');
-  return Number(req.params.id);
+  const id = parsePositiveInt(req.params.id);
+  if (Number.isNaN(id)) throw new AppError(400, 'Хүсэлтийн дугаар буруу байна');
+  return id;
 }
 
 /**
@@ -16,10 +16,6 @@ function createApplicationController(db) {
   const service = createApplicationService(db);
 
   return {
-    listDormitories(req, res) {
-      res.json({ dormitories: service.listDormitories(req.session.user) });
-    },
-
     // GET /api/applications  (ажилтан: ?status=PENDING)
     list(req, res) {
       res.json({ applications: service.list(req.session.user, req.query) });

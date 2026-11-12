@@ -1,14 +1,8 @@
 /**
- * Demo өгөгдөл: 3 байр, 2 оюутан, 1 ажилтан.
+ * Demo өгөгдөл: 2 оюутан, 1 ажилтан.
  * Ажиллуулах: npm run seed   (DEMO_PASSWORD-ийг .env-д тохируулсан байх)
  */
 const bcrypt = require('bcryptjs');
-
-const DORMITORIES = [
-  { name: '1-р байр', genderType: 'male', capacity: 120 },
-  { name: '2-р байр', genderType: 'female', capacity: 150 },
-  { name: '3-р байр', genderType: 'mixed', capacity: 80 },
-];
 
 const USERS = [
   { username: 'B221910001', fullName: 'Б. Тэмүүлэн', email: 'b221910001@student.edu.mn', gender: 'male', role: 'student' },
@@ -17,28 +11,24 @@ const USERS = [
 ];
 
 /**
- * Өгөгдлийн санд demo өгөгдөл оруулна. Хэрэглэгч бүрт тусдаа salt-тай hash үүсгэнэ.
+ * Өгөгдлийн санд demo хэрэглэгчдийг оруулна. Хэрэглэгч бүрт тусдаа salt-тай hash үүсгэнэ.
  */
 function seedDemo(db, password, rounds = 10) {
   if (!password) throw new Error('Demo нууц үг өгөгдөөгүй байна');
 
-  const insertDorm = db.prepare(
-    'INSERT OR IGNORE INTO dormitories (name, gender_type, capacity) VALUES (?, ?, ?)'
-  );
   const insertUser = db.prepare(
     `INSERT OR IGNORE INTO users (username, full_name, email, password_hash, gender, role)
      VALUES (@username, @fullName, @email, @passwordHash, @gender, @role)`
   );
 
   db.transaction(() => {
-    for (const d of DORMITORIES) insertDorm.run(d.name, d.genderType, d.capacity);
     for (const u of USERS) {
       insertUser.run({ ...u, passwordHash: bcrypt.hashSync(password, rounds) });
     }
   })();
 }
 
-module.exports = { seedDemo, DORMITORIES, USERS };
+module.exports = { seedDemo, USERS };
 
 if (require.main === module) {
   const config = require('../src/config');

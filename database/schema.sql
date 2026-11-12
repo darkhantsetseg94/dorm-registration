@@ -1,5 +1,8 @@
--- Оюутны дотуур байрны бүртгэлийн систем
+-- Оюутны дотуур байрны бүртгэлийн систем (нэг байртай)
 -- Лаб 5: US-01 хүсэлт илгээх · Лаб 11: CRUD (засах, цуцлах, ажилтан шийдвэрлэх)
+
+-- Схемийн хувилбар. Бүтэц өөрчлөгдөх бүрд нэмэгдүүлж, src/db/database.js-ийн SCHEMA_VERSION-тэй тааруулна.
+PRAGMA user_version = 3;
 
 CREATE TABLE IF NOT EXISTS users (
   user_id       INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -12,17 +15,10 @@ CREATE TABLE IF NOT EXISTS users (
   created_at    TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 
-CREATE TABLE IF NOT EXISTS dormitories (
-  dorm_id     INTEGER PRIMARY KEY AUTOINCREMENT,
-  name        TEXT    NOT NULL UNIQUE,
-  gender_type TEXT    NOT NULL CHECK (gender_type IN ('male', 'female', 'mixed')),
-  capacity    INTEGER NOT NULL CHECK (capacity > 0)
-);
-
+-- Дотуур байр нэг байртай тул хүсэлтэд байр сонгох талбар байхгүй.
 CREATE TABLE IF NOT EXISTS applications (
   application_id  INTEGER PRIMARY KEY AUTOINCREMENT,
   student_id      INTEGER NOT NULL REFERENCES users (user_id) ON DELETE CASCADE,
-  dorm_id         INTEGER NOT NULL REFERENCES dormitories (dorm_id),
   academic_year   TEXT    NOT NULL,                   -- жишээ: 2026-2027
   phone           TEXT    NOT NULL,
   emergency_name  TEXT    NOT NULL,

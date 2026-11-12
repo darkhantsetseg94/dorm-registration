@@ -9,8 +9,8 @@ function asTrimmedString(value) {
 }
 
 /**
- * Байрны ID-г хатуу шалгана. Number(true) === 1, Number([1]) === 1 болдог тул
- * зөвхөн бүхэл тоо эсвэл цифрээс бүрдсэн string-ийг зөвшөөрнө.
+ * ID-г (жишээ нь URL дахь хүсэлтийн дугаар) хатуу шалгана. Number(true) === 1,
+ * Number([1]) === 1 болдог тул зөвхөн бүхэл тоо эсвэл цифрээс бүрдсэн string-ийг зөвшөөрнө.
  */
 function parsePositiveInt(value) {
   if (typeof value === 'number') return Number.isInteger(value) && value > 0 ? value : NaN;
@@ -19,8 +19,9 @@ function parsePositiveInt(value) {
 }
 
 /**
- * Хүсэлтийн form-ыг шалгана. Зөвхөн зөвшөөрөгдсөн 5 талбарыг уншина (whitelist),
- * тул studentId, status зэрэг илүү талбар data-д хэзээ ч орохгүй.
+ * Хүсэлтийн form-ыг шалгана. Дотуур байр нэг байртай тул байр сонгох талбаргүй.
+ * Зөвхөн зөвшөөрөгдсөн 4 талбарыг уншина (whitelist), тул studentId, status
+ * зэрэг илүү талбар data-д хэзээ ч орохгүй.
  */
 function validateApplication(body) {
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
@@ -32,14 +33,6 @@ function validateApplication(body) {
   const emergencyName = asTrimmedString(body.emergencyName);
   const emergencyPhone = asTrimmedString(body.emergencyPhone);
   const reason = asTrimmedString(body.reason);
-  const dormId = parsePositiveInt(body.dormId);
-
-  // Байр
-  if (body.dormId === undefined || body.dormId === null || body.dormId === '') {
-    errors.dormId = 'Байраа сонгоно уу';
-  } else if (Number.isNaN(dormId)) {
-    errors.dormId = 'Байрны сонголт буруу байна';
-  }
 
   // Утас
   if (!phone) errors.phone = 'Утасны дугаараа оруулна уу';
@@ -61,16 +54,16 @@ function validateApplication(body) {
   }
 
   if (Object.keys(errors).length > 0) return { errors, data: null };
-  return { errors: null, data: { dormId, phone, emergencyName, emergencyPhone, reason } };
+  return { errors: null, data: { phone, emergencyName, emergencyPhone, reason } };
 }
 
-const EDITABLE_FIELDS = ['dormId', 'phone', 'emergencyName', 'emergencyPhone', 'reason'];
+const EDITABLE_FIELDS = ['phone', 'emergencyName', 'emergencyPhone', 'reason'];
 
 /**
  * PATCH (оюутан хүсэлтээ засах): зөвхөн өгсөн талбарыг одоогийн утга дээр давхарлаж,
  * үр дүнг бүтнээр нь validateApplication-оор шалгана (жишээ нь утас ≠ яаралтай утас).
  * @param {object} body     хүсэлтийн body
- * @param {object} current  одоогийн утгууд { dormId, phone, emergencyName, emergencyPhone, reason }
+ * @param {object} current  одоогийн утгууд { phone, emergencyName, emergencyPhone, reason }
  */
 function validateApplicationUpdate(body, current) {
   if (!body || typeof body !== 'object' || Array.isArray(body)) {

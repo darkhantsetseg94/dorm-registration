@@ -72,7 +72,6 @@ function renderStudent(applications, message) {
     }
     tr.append(
       cell(`#${app.id}`),
-      cell(app.dormName),
       cell(app.academicYear),
       cell(formatDate(app.createdAt)),
       statusCell(app.status, app.statusLabel),
@@ -133,7 +132,6 @@ function renderStaff(applications) {
     tr.append(
       cell(`#${app.id}`),
       cell(`${app.studentName} (${app.studentUsername})`),
-      cell(app.dormName),
       cell(app.phone),
       wrapCell(app.reason),
       cell(formatDate(app.createdAt)),

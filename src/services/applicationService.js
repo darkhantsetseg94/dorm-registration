@@ -28,8 +28,6 @@ function toDto(row) {
     studentId: row.student_id,
     studentUsername: row.student_username,
     studentName: row.student_name,
-    dormId: row.dorm_id,
-    dormName: row.dorm_name,
     academicYear: row.academic_year,
     phone: row.phone,
     emergencyName: row.emergency_name,
@@ -50,7 +48,7 @@ const notPending = (row) => new AppError(
 );
 
 /**
- * Service давхарга: бизнесийн дүрэм (эрх, төлөвийн шилжилт, хүйс, нэг жилд нэг хүсэлт).
+ * Service давхарга: бизнесийн дүрэм (эрх, төлөвийн шилжилт, нэг жилд нэг хүсэлт).
  * Өгөгдлийн сантай зөвхөн model-оор дамжиж харилцана.
  */
 function createApplicationService(db) {
@@ -66,30 +64,11 @@ function createApplicationService(db) {
     return row;
   }
 
-  function assertDormAllowed(user, dormId) {
-    const dorm = model.findDormById(dormId);
-    if (!dorm) {
-      throw new AppError(400, 'Хүсэлт буруу байна', { dormId: 'Сонгосон байр олдсонгүй' });
-    }
-    if (dorm.gender_type !== 'mixed' && dorm.gender_type !== user.gender) {
-      throw new AppError(400, 'Хүсэлт буруу байна', { dormId: 'Энэ байр таны хүйсэнд тохирохгүй байна' });
-    }
-  }
-
   return {
-    /** Оюутанд өөрийн хүйсийн болон холимог байр, ажилтанд бүх байр. */
-    listDormitories(user) {
-      const rows = user.role === 'student'
-        ? model.listDormitoriesForGender(user.gender)
-        : model.listDormitories();
-      return rows.map((r) => ({ id: r.dorm_id, name: r.name, genderType: r.gender_type, capacity: r.capacity }));
-    },
-
     /** CREATE — хүсэлт бүртгэнэ (US-01). studentId-г зөвхөн session-оос авна. */
     create(user, body, now = new Date()) {
       const { errors, data } = validateApplication(body);
       if (errors) throw new AppError(400, 'Form-ын мэдээлэл буруу байна', errors);
-      assertDormAllowed(user, data.dormId);
 
       const academicYear = currentAcademicYear(now);
       if (model.hasActiveForYear(user.id, academicYear)) {
@@ -150,15 +129,13 @@ function createApplicationService(db) {
       if (row.status !== 'PENDING') throw notPending(row);
 
       const current = {
-        dormId: row.dorm_id,
         phone: row.phone,
         emergencyName: row.emergency_name,
         emergencyPhone: row.emergency_phone,
         reason: row.reason,
       };
-      const { errors, data, changed } = validateApplicationUpdate(body, current);
+      const { errors, data } = validateApplicationUpdate(body, current);
       if (errors) throw new AppError(400, 'Form-ын мэдээлэл буруу байна', errors);
-      if (changed.includes('dormId')) assertDormAllowed(user, data.dormId);
 
       if (!model.updateFields(applicationId, data)) throw notPending(model.findById(applicationId));
       return toDto(model.findById(applicationId));
