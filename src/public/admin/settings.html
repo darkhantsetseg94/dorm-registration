@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тохиргоо — ОДБ ажилтан</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/theme.js"></script>
+</head>
+<body class="is-booting">
+  <main class="page" id="main">
+    <div class="page-head">
+      <div>
+        <h1>Тохиргоо</h1>
+        <p>Хүсэлт хүлээн авах хугацаа болон шинэ оюутны бүртгэлийг удирдана.</p>
+      </div>
+    </div>
+
+    <div id="status" class="flash"></div>
+
+    <form class="panel settings-list" id="settings-form" novalidate>
+      <div class="settings-item">
+        <div>
+          <h3>Хүсэлт хүлээн авах</h3>
+          <p>Унтраавал оюутан шинээр хүсэлт илгээх, засах боломжгүй. Цуцлах боломжтой хэвээр.</p>
+        </div>
+        <div id="open-switch"></div>
+      </div>
+      <div class="settings-item">
+        <div>
+          <h3>Хүлээн авах хугацаа</h3>
+          <p>Хоосон орхивол хугацаагүй. Огноо Улаанбаатарын цагаар тооцогдоно.</p>
+        </div>
+        <div class="form-row">
+          <div class="field" data-field="applicationStart">
+            <label for="applicationStart">Эхлэх өдөр</label>
+            <input class="input" type="date" id="applicationStart" name="applicationStart">
+            <div class="field-error" aria-live="polite"></div>
+          </div>
+          <div class="field" data-field="applicationDeadline">
+            <label for="applicationDeadline">Эцсийн өдөр</label>
+            <input class="input" type="date" id="applicationDeadline" name="applicationDeadline">
+            <div class="field-error" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+      <div class="settings-item">
+        <div>
+          <h3>Оюутан өөрөө бүртгүүлэх</h3>
+          <p>Унтраавал шинэ оюутныг зөвхөн ажилтан "Хэрэглэгчид" хэсгээс нэмнэ.</p>
+        </div>
+        <div id="register-switch"></div>
+      </div>
+      <div class="panel-foot">
+        <button class="btn" type="submit" id="save">Тохиргоог хадгалах</button>
+      </div>
+    </form>
+  </main>
+  <script type="module" src="/js/pages/admin-settings.js"></script>
+</body>
+</html>

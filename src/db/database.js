@@ -1,41 +1,26 @@
 const fs = require('fs');
 const path = require('path');
 const Database = require('better-sqlite3');
-
-const SCHEMA_PATH = path.join(__dirname, '..', '..', 'database', 'schema.sql');
-const SCHEMA_VERSION = 3; // database/schema.sql доторх PRAGMA user_version-тэй ижил
+const { migrate } = require('./migrations');
 
 /**
- * Өмнөх бүтэцтэй (жишээ нь олон байртай, dorm_id баганатай) өгөгдлийн сан эсэхийг шалгана.
+ * SQLite холболт үүсгэж, хүснэгтүүдийг хамгийн сүүлийн бүтэц рүү шинэчилнэ.
+ * @param {string} file  өгөгдлийн сангийн файл (тестэд ':memory:')
  */
-function isOutdated(db) {
-  const hasTables = db.prepare(
-    "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'applications'"
-  ).get();
-  return Boolean(hasTables) && db.pragma('user_version', { simple: true }) !== SCHEMA_VERSION;
-}
+function createDatabase(file) {
+  const inMemory = file === ':memory:';
+  if (!inMemory) fs.mkdirSync(path.dirname(path.resolve(file)), { recursive: true });
 
-/**
- * SQLite холболт нээж, хүснэгтүүдийг үүсгэнэ.
- * @param {string} filename  файлын зам эсвэл ':memory:' (тестэд)
- */
-function createDatabase(filename = ':memory:') {
-  if (filename !== ':memory:') {
-    fs.mkdirSync(path.dirname(path.resolve(filename)), { recursive: true });
-  }
-  const db = new Database(filename);
+  const db = new Database(file);
   db.pragma('foreign_keys = ON');
-  if (filename !== ':memory:') db.pragma('journal_mode = WAL');
-
-  if (isOutdated(db)) {
-    db.close();
-    throw new Error(
-      `Өгөгдлийн сан (${filename}) хуучин бүтэцтэй байна. `
-      + 'data хавтсыг устгаад "npm run seed"-ийг дахин ажиллуулна уу.'
-    );
+  // SQLite-ийн LOWER() зөвхөн латин үсгийг жижигрүүлдэг тул кирилл хайлтад зориулсан функц
+  db.function('lower_unicode', { deterministic: true }, (text) => (text == null ? null : String(text).toLowerCase()));
+  if (!inMemory) {
+    db.pragma('journal_mode = WAL');
+    db.pragma('busy_timeout = 5000');
   }
-  db.exec(fs.readFileSync(SCHEMA_PATH, 'utf8'));
+  migrate(db);
   return db;
 }
 
-module.exports = { createDatabase, SCHEMA_VERSION };
+module.exports = { createDatabase };

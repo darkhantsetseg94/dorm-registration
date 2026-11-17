@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Профайл — ОДБ</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/theme.js"></script>
+</head>
+<body class="is-booting">
+  <main class="page" id="main">
+    <div class="page-head">
+      <div>
+        <h1>Профайл</h1>
+        <p>Холбоо барих мэдээлэл, нууц үгээ эндээс шинэчилнэ.</p>
+      </div>
+    </div>
+
+    <div class="grid-2-even">
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-head"><h2>Хувийн мэдээлэл</h2></div>
+          <div class="panel-body" id="profile-info"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Холбоо барих</h2></div>
+          <form class="panel-body form" id="contact-form" novalidate>
+            <div class="field" data-field="email">
+              <label for="email">Имэйл</label>
+              <input class="input" id="email" name="email" type="email" maxlength="120" autocomplete="email">
+              <div class="field-error" aria-live="polite"></div>
+            </div>
+            <div class="field" data-field="phone">
+              <label for="phone">Утас <span class="optional">(заавал биш)</span></label>
+              <input class="input" id="phone" name="phone" type="tel" inputmode="numeric" maxlength="8" autocomplete="tel" placeholder="99112233">
+              <div class="hint">Хүсэлт бөглөхөд автоматаар орно.</div>
+              <div class="field-error" aria-live="polite"></div>
+            </div>
+            <div><button class="btn" type="submit" id="contact-btn">Хадгалах</button></div>
+          </form>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-head"><h2>Нууц үг солих</h2></div>
+          <form class="panel-body form" id="password-form" novalidate>
+            <div class="field" data-field="currentPassword">
+              <label for="currentPassword">Одоогийн нууц үг</label>
+              <input class="input" id="currentPassword" name="currentPassword" type="password" maxlength="128" autocomplete="current-password">
+              <div class="field-error" aria-live="polite"></div>
+            </div>
+            <div class="field" data-field="newPassword">
+              <label for="newPassword">Шинэ нууц үг</label>
+              <input class="input" id="newPassword" name="newPassword" type="password" maxlength="128" autocomplete="new-password">
+              <div class="hint">Дор хаяж 8 тэмдэгт, үсэг болон тоо агуулсан.</div>
+              <div class="field-error" aria-live="polite"></div>
+            </div>
+            <div class="field" data-field="newPasswordConfirm">
+              <label for="newPasswordConfirm">Шинэ нууц үгээ давтах</label>
+              <input class="input" id="newPasswordConfirm" name="newPasswordConfirm" type="password" maxlength="128" autocomplete="new-password">
+              <div class="field-error" aria-live="polite"></div>
+            </div>
+            <p class="hint">Солисны дараа бусад төхөөрөмж дээрх нэвтрэлт тань гарна.</p>
+            <div><button class="btn" type="submit" id="password-btn">Нууц үг солих</button></div>
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Харагдах байдал</h2></div>
+          <div class="panel-body">
+            <div class="seg" role="radiogroup" aria-label="Өнгөний горим" id="theme-seg">
+              <label><input type="radio" name="theme" value="system">Төхөөрөмжийнх</label>
+              <label><input type="radio" name="theme" value="light">Цайвар</label>
+              <label><input type="radio" name="theme" value="dark">Бараан</label>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <script type="module" src="/js/pages/profile.js"></script>
+</body>
+</html>

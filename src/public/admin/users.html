@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Хэрэглэгчид — ОДБ ажилтан</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/theme.js"></script>
+</head>
+<body class="is-booting">
+  <main class="page" id="main">
+    <div class="page-head">
+      <div>
+        <h1>Хэрэглэгчид</h1>
+        <p>Оюутан, ажилтны бүртгэл. Идэвхгүй болгосон хэрэглэгч нэвтэрч чадахгүй.</p>
+      </div>
+      <div class="actions"><button class="btn" type="button" id="add-user"></button></div>
+    </div>
+
+    <section class="panel panel-table">
+      <div class="toolbar">
+        <div class="input-search">
+          <label class="sr-only" for="q">Хайх</label>
+          <input class="input" id="q" type="search" maxlength="60" placeholder="Нэр, код, имэйл, утсаар хайх" autocomplete="off">
+        </div>
+        <div class="seg" id="role-tabs" role="group" aria-label="Эрхээр шүүх"></div>
+      </div>
+      <div id="table" aria-live="polite"></div>
+      <div id="pager"></div>
+    </section>
+  </main>
+  <script type="module" src="/js/pages/admin-users.js"></script>
+</body>
+</html>

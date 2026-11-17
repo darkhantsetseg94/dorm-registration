@@ -1,31 +1,22 @@
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 
 const env = process.env.NODE_ENV || 'development';
-const isTest = env === 'test';
-const isProduction = env === 'production';
 
-/**
- * Нууц утгыг .env-ээс уншина. Тест орчноос бусад үед заавал байх ёстой.
- */
-function required(name, testDefault) {
-  const value = process.env[name];
-  if (value) return value;
-  if (isTest) return testDefault;
-  throw new Error(`${name} орчны хувьсагч тохируулагдаагүй байна (.env.example-ийг үзнэ үү)`);
+// Нууц утгыг код дотор бичихгүй — заавал орчны хувьсагчаас уншина.
+if (!process.env.SESSION_SECRET) {
+  throw new Error('SESSION_SECRET орчны хувьсагч тохируулагдаагүй байна (.env файлыг шалгана уу)');
 }
 
 module.exports = {
   env,
-  isTest,
-  isProduction,
+  isProduction: env === 'production',
   port: Number(process.env.PORT) || 3000,
-  dbFile: process.env.DB_FILE || 'data/odb.db',
-  sessionSecret: required('SESSION_SECRET', 'test-only-session-secret'),
-  sessionMaxAgeMs: 2 * 60 * 60 * 1000, // 2 цаг
-  // bcrypt-ийн cost. Тестэд хурдан ажиллуулахын тулд бага утга ашиглана.
-  bcryptRounds: isTest ? 4 : 10,
-  login: {
-    windowMs: 15 * 60 * 1000, // 15 минут
-    maxFailedAttempts: 5,
-  },
+  sessionSecret: process.env.SESSION_SECRET,
+  dbFile: process.env.DB_FILE || 'database/odb.db',
+  // Хичээлийн жил, хүсэлтийн эцсийн хугацааг энэ цагийн бүсээр тооцно
+  timeZone: process.env.TIME_ZONE || 'Asia/Ulaanbaatar',
+  bcryptRounds: 10,
+  sessionMaxAgeMs: 30 * 60 * 1000, // 30 минут идэвхгүй бол гаргана (идэвхтэй үед сунгагдана)
+  loginRateLimit: { windowMs: 15 * 60 * 1000, limit: 5 },
+  registerRateLimit: { windowMs: 60 * 60 * 1000, limit: 10 },
 };

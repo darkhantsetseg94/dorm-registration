@@ -1,8 +1,8 @@
 node_modules/
 .env
-data/
 *.db
-*.sqlite
+*.db-shm
+*.db-wal
 coverage/
 npm-debug.log*
 .DS_Store

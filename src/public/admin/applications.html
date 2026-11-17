@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Хүсэлтүүд — ОДБ ажилтан</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/theme.js"></script>
+</head>
+<body class="is-booting">
+  <main class="page" id="main">
+    <div class="page-head">
+      <div>
+        <h1>Хүсэлтүүд</h1>
+        <p>Мөр дээр дарж дэлгэрэнгүйг харж, шийдвэрлэнэ.</p>
+      </div>
+      <div class="actions">
+        <a class="btn btn-secondary" id="export" href="/api/admin/applications/export" download></a>
+      </div>
+    </div>
+
+    <section class="panel panel-table">
+      <form class="toolbar" id="filters" role="search">
+        <div class="input-search">
+          <label class="sr-only" for="q">Хайх</label>
+          <input class="input" id="q" name="q" type="search" maxlength="60" placeholder="Нэр, оюутны код, утсаар хайх" autocomplete="off">
+        </div>
+        <label class="sr-only" for="dormId">Байр</label>
+        <select class="select" id="dormId" name="dormId"></select>
+        <label class="sr-only" for="year">Хичээлийн жил</label>
+        <select class="select" id="year" name="year"></select>
+        <label class="sr-only" for="sort">Эрэмбэ</label>
+        <select class="select" id="sort" name="sort">
+          <option value="newest">Шинэ нь эхэндээ</option>
+          <option value="oldest">Удаан хүлээсэн нь эхэндээ</option>
+          <option value="priority">Давуу эрх олонтой нь эхэндээ</option>
+          <option value="name">Нэрээр (А–Я)</option>
+        </select>
+      </form>
+      <div class="tabs-row"><div class="seg" id="status-tabs" role="group" aria-label="Төлвөөр шүүх"></div></div>
+      <div id="table" aria-live="polite"></div>
+      <div id="pager"></div>
+    </section>
+  </main>
+  <script type="module" src="/js/pages/admin-applications.js"></script>
+</body>
+</html>

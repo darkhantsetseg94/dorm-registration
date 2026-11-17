@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Бүртгүүлэх — ОДБ</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <div class="auth">
+    <section class="facade" aria-label="Оюутны дотуур байр">
+      <a class="brand" href="/login.html">
+        <span class="brand-mark" aria-hidden="true">ОДБ</span>
+        <span class="brand-text">Дотуур байр<small>Бүртгэлийн систем</small></span>
+      </a>
+      <div class="facade-copy">
+        <h1>Бүртгүүлээд хүсэлтээ шууд илгээ</h1>
+        <p>Оюутны кодоороо бүртгүүлнэ. Дараа нь энэ кодоороо нэвтэрнэ.</p>
+      </div>
+      <div class="building" id="building" aria-hidden="true"></div>
+    </section>
+
+    <main class="auth-main" id="main">
+      <div class="auth-card">
+        <h1>Оюутнаар бүртгүүлэх</h1>
+        <p class="lead">Бүх талбарыг бөглөнө үү. Утасны дугаар заавал биш.</p>
+
+        <div id="form-alert" class="alert alert-error hidden" role="alert"></div>
+
+        <form id="register-form" class="form" novalidate>
+          <div class="field" data-field="username">
+            <label for="username">Оюутны код</label>
+            <input class="input" id="username" name="username" type="text" maxlength="12" autocomplete="username"
+                   autocapitalize="characters" spellcheck="false" placeholder="B221910001">
+            <div class="field-error" aria-live="polite"></div>
+          </div>
+          <div class="field" data-field="fullName">
+            <label for="fullName">Нэр, эцэг/эхийн нэр</label>
+            <input class="input" id="fullName" name="fullName" type="text" maxlength="60" autocomplete="name" placeholder="Бат-Эрдэнэ Ганбаатар">
+            <div class="field-error" aria-live="polite"></div>
+          </div>
+          <div class="field" data-field="gender">
+            <span class="field-label" id="gender-label">Хүйс</span>
+            <div class="seg" role="radiogroup" aria-labelledby="gender-label">
+              <label><input type="radio" name="gender" value="male">Эрэгтэй</label>
+              <label><input type="radio" name="gender" value="female">Эмэгтэй</label>
+            </div>
+            <div class="hint">Хүйсэнд тохирох байрууд л харагдана.</div>
+            <div class="field-error" aria-live="polite"></div>
+          </div>
+          <div class="form-row">
+            <div class="field" data-field="email">
+              <label for="email">Имэйл</label>
+              <input class="input" id="email" name="email" type="email" maxlength="120" autocomplete="email" placeholder="ner@stud.edu.mn">
+              <div class="field-error" aria-live="polite"></div>
+            </div>
+            <div class="field" data-field="phone">
+              <label for="phone">Утас <span class="optional">(заавал биш)</span></label>
+              <input class="input" id="phone" name="phone" type="tel" inputmode="numeric" maxlength="8" autocomplete="tel" placeholder="99112233">
+              <div class="field-error" aria-live="polite"></div>
+            </div>
+          </div>
+          <div class="field" data-field="password">
+            <label for="password">Нууц үг</label>
+            <div class="input-group">
+              <input class="input" id="password" name="password" type="password" maxlength="128" autocomplete="new-password" aria-describedby="password-hint">
+              <button class="icon-btn" type="button" id="toggle-password" aria-controls="password"></button>
+            </div>
+            <div class="hint" id="password-hint">Дор хаяж 8 тэмдэгт, үсэг болон тоо агуулсан.</div>
+            <div class="field-error" aria-live="polite"></div>
+          </div>
+          <div class="field" data-field="passwordConfirm">
+            <label for="passwordConfirm">Нууц үгээ давтах</label>
+            <input class="input" id="passwordConfirm" name="passwordConfirm" type="password" maxlength="128" autocomplete="new-password">
+            <div class="field-error" aria-live="polite"></div>
+          </div>
+          <button id="submit-btn" class="btn btn-block" type="submit">Бүртгүүлэх</button>
+        </form>
+
+        <div id="closed" class="alert alert-info hidden" role="status"></div>
+
+        <p class="auth-foot">Бүртгэлтэй юу? <a href="/login.html">Нэвтрэх</a></p>
+      </div>
+    </main>
+  </div>
+  <script type="module" src="/js/pages/register.js"></script>
+</body>
+</html>
