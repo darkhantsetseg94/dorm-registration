@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Хянах самбар — ОДБ ажилтан</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/theme.js"></script>
+</head>
+<body class="is-booting">
+  <main class="page" id="main">
+    <div class="page-head">
+      <div>
+        <h1>Хянах самбар</h1>
+        <p id="subtitle">Хүсэлт, байрны дүүргэлтийн тойм</p>
+      </div>
+      <div class="actions">
+        <label class="sr-only" for="year">Хичээлийн жил</label>
+        <select class="select" id="year"></select>
+        <a class="btn" href="/admin/applications.html?status=PENDING">Хүсэлт шийдвэрлэх</a>
+      </div>
+    </div>
+
+    <section class="panel stat-strip" id="stats" aria-label="Гол үзүүлэлтүүд"></section>
+
+    <div class="grid-2 mt-24">
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Байрны дүүргэлт</h2>
+            <div class="legend">
+              <span><i class="lg-approved"></i>Зөвшөөрсөн</span>
+              <span><i class="lg-pending"></i>Хүлээгдэж буй</span>
+            </div>
+          </div>
+          <div class="panel-body" id="occupancy"></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Сүүлийн 14 хоногт ирсэн хүсэлт</h2></div>
+          <div class="panel-body" id="daily"></div>
+        </section>
+      </div>
+      <aside class="stack">
+        <section class="panel panel-table">
+          <div class="panel-head">
+            <h2>Шийдвэр хүлээж буй</h2>
+            <a class="small" href="/admin/applications.html?status=PENDING&amp;sort=oldest">Бүгдийг харах</a>
+          </div>
+          <p class="hint panel-note">Удаан хүлээсэн нь эхэндээ</p>
+          <ul class="pending-list mt-12" id="pending"></ul>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Хаанаас ирсэн</h2></div>
+          <div class="panel-body" id="provinces"></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Давуу эрхтэй хүсэлт</h2></div>
+          <div class="panel-body" id="tags"></div>
+        </section>
+      </aside>
+    </div>
+  </main>
+  <script type="module" src="/js/pages/admin-overview.js"></script>
+</body>
+</html>

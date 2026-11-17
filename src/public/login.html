@@ -1,31 +1,60 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="mn">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Нэвтрэх — ОДБ систем</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Нэвтрэх — ОДБ</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/theme.js"></script>
 </head>
-<body class="auth-page">
-  <main class="card auth-card">
-    <h1>Оюутны дотуур байр</h1>
-    <p class="muted">Бүртгэлийн системд нэвтрэх</p>
+<body>
+  <div class="auth">
+    <section class="facade" aria-label="Оюутны дотуур байр">
+      <a class="brand" href="/login.html">
+        <span class="brand-mark" aria-hidden="true">ОДБ</span>
+        <span class="brand-text">Дотуур байр<small>Бүртгэлийн систем</small></span>
+      </a>
+      <div class="facade-copy">
+        <h1>Дотуур байрны хүсэлтээ гэрээсээ илгээ</h1>
+        <p>Хүсэлтийн явцаа хянаж, хуваарилагдсан өрөөнийхөө дугаарыг эндээс харна.</p>
+      </div>
+      <div class="building" id="building" aria-hidden="true"></div>
+    </section>
 
-    <div id="alert" class="alert alert-error" role="alert" hidden></div>
+    <main class="auth-main" id="main">
+      <div class="auth-card">
+        <h1>Нэвтрэх</h1>
+        <p class="lead">Оюутны код эсвэл ажилтны нэрээрээ нэвтэрнэ.</p>
 
-    <form id="loginForm" novalidate>
-      <label for="username">Оюутны код / нэвтрэх нэр</label>
-      <input id="username" name="username" type="text" autocomplete="username" placeholder="B221910001" maxlength="30">
-      <p class="field-error" data-for="username"></p>
+        <div id="login-error" class="alert alert-error hidden" role="alert"></div>
 
-      <label for="password">Нууц үг</label>
-      <input id="password" name="password" type="password" autocomplete="current-password" maxlength="128">
-      <p class="field-error" data-for="password"></p>
+        <form id="login-form" class="form" novalidate>
+          <div class="field">
+            <label for="username">Оюутны код эсвэл нэвтрэх нэр</label>
+            <input class="input" id="username" name="username" type="text" maxlength="20"
+                   autocomplete="username" autocapitalize="characters" spellcheck="false" placeholder="B221910001" required>
+          </div>
+          <div class="field">
+            <label for="password">Нууц үг</label>
+            <div class="input-group">
+              <input class="input" id="password" name="password" type="password" maxlength="128" autocomplete="current-password" required>
+              <button class="icon-btn" type="button" id="toggle-password" aria-label="Нууц үгийг харуулах" aria-controls="password"></button>
+            </div>
+          </div>
+          <button id="login-btn" class="btn btn-block" type="submit">Нэвтрэх</button>
+        </form>
 
-      <button type="submit" class="btn btn-primary">Нэвтрэх</button>
-    </form>
-  </main>
-  <script src="/js/api.js"></script>
-  <script src="/js/login.js"></script>
+        <p class="auth-foot" id="register-link" hidden>Бүртгэлгүй юу? <a href="/register.html">Оюутнаар бүртгүүлэх</a></p>
+
+        <details class="demo-box" id="demo-box" hidden>
+          <summary>Туршилтын бүртгэл</summary>
+          <p class="muted small">Нэвтрэх нэрийг дарж бөглөнө. Нууц үг нь <code>.env</code> файлын <code>DEMO_PASSWORD</code>.</p>
+          <div class="demo-list" id="demo-list"></div>
+        </details>
+      </div>
+    </main>
+  </div>
+  <script type="module" src="/js/pages/login.js"></script>
 </body>
 </html>

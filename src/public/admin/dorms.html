@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Байр, өрөө — ОДБ ажилтан</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/theme.js"></script>
+</head>
+<body class="is-booting">
+  <main class="page" id="main">
+    <div class="page-head">
+      <div>
+        <h1>Байр, өрөө</h1>
+        <p>Өрөө дээр дарж оршин суугчдыг харж, мэдээллийг засна.</p>
+      </div>
+      <div class="actions">
+        <label class="sr-only" for="year">Хичээлийн жил</label>
+        <select class="select" id="year"></select>
+        <button class="btn" type="button" id="add-dorm"></button>
+      </div>
+    </div>
+
+    <div class="dorm-tabs" id="dorm-tabs" role="group" aria-label="Байр сонгох"></div>
+    <section class="panel mt-16" id="dorm-detail" aria-live="polite"></section>
+  </main>
+  <script type="module" src="/js/pages/admin-dorms.js"></script>
+</body>
+</html>

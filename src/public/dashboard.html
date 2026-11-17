@@ -1,84 +1,46 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="mn">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Хүсэлтүүд — ОДБ систем</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Нүүр — ОДБ</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/theme.js"></script>
 </head>
-<body>
-  <header class="topbar">
-    <span class="brand">ОДБ систем</span>
-    <span id="userName" class="muted"></span>
-    <button id="logoutBtn" class="btn btn-link" type="button">Гарах</button>
-  </header>
+<body class="is-booting">
+  <main class="page" id="main">
+    <div class="page-head hello">
+      <div>
+        <h1 id="greeting">Сайн байна уу</h1>
+        <p id="year-line"></p>
+      </div>
+    </div>
 
-  <main class="container wide">
-    <div id="flash" class="alert alert-success" role="status" hidden></div>
-    <div id="error" class="alert alert-error" role="alert" hidden></div>
+    <div id="flash"></div>
 
-    <!-- Оюутан: өөрийн хүсэлтүүд (US-01, US-02) -->
-    <section id="studentSection" hidden>
-      <div class="row-between">
-        <h1>Миний хүсэлтүүд</h1>
-        <a class="btn btn-primary" href="/apply.html">+ Шинэ хүсэлт илгээх</a>
+    <div class="grid-2">
+      <div class="stack">
+        <section class="panel status-panel" id="status" aria-live="polite" aria-label="Энэ жилийн хүсэлт"></section>
+
+        <section class="panel panel-table">
+          <div class="panel-head"><h2>Миний хүсэлтүүд</h2></div>
+          <div id="history"></div>
+        </section>
       </div>
 
-      <p id="emptyState" class="card muted" hidden></p>
-
-      <div class="card table-wrap" id="tableCard" hidden>
-        <table>
-          <thead>
-            <tr>
-              <th>№</th>
-              <th>Хичээлийн жил</th>
-              <th>Илгээсэн огноо</th>
-              <th>Төлөв</th>
-              <th>Тайлбар</th>
-              <th>Үйлдэл</th>
-            </tr>
-          </thead>
-          <tbody id="applicationRows"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Ажилтан: ирсэн хүсэлтүүдийг шийдвэрлэх (US-05) -->
-    <section id="staffSection" hidden>
-      <div class="row-between">
-        <h1>Ирсэн хүсэлтүүд</h1>
-        <label class="inline-label">Төлөв:
-          <select id="statusFilter">
-            <option value="">Бүгд</option>
-            <option value="PENDING" selected>Хүлээгдэж буй</option>
-            <option value="APPROVED">Зөвшөөрсөн</option>
-            <option value="REJECTED">Татгалзсан</option>
-            <option value="CANCELLED">Цуцалсан</option>
-          </select>
-        </label>
-      </div>
-
-      <p id="staffEmpty" class="card muted" hidden>Энэ төлөвтэй хүсэлт байхгүй байна</p>
-
-      <div class="card table-wrap" id="staffTableCard" hidden>
-        <table>
-          <thead>
-            <tr>
-              <th>№</th>
-              <th>Оюутан</th>
-              <th>Утас</th>
-              <th>Шалтгаан</th>
-              <th>Илгээсэн</th>
-              <th>Төлөв</th>
-              <th>Шийдвэр</th>
-            </tr>
-          </thead>
-          <tbody id="staffRows"></tbody>
-        </table>
-      </div>
-    </section>
+      <aside class="stack">
+        <section class="panel">
+          <div class="panel-head"><h2>Мэдээлэл</h2></div>
+          <div class="panel-body" id="announcements"></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Байрны сул ор</h2></div>
+          <div class="panel-body" id="dorms"></div>
+        </section>
+      </aside>
+    </div>
   </main>
-  <script src="/js/api.js"></script>
-  <script src="/js/dashboard.js"></script>
+  <script type="module" src="/js/pages/dashboard.js"></script>
 </body>
 </html>

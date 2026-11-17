@@ -1,14 +1,21 @@
 /**
- * Хэрэглэгчид харуулах боломжтой алдаа. status нь HTTP код,
- * details нь талбар тус бүрийн алдааны мессеж (заавал биш).
+ * Хэрэглэгчид харуулж болох, урьдчилан тооцсон алдаа.
+ * status — HTTP код, details — талбар тус бүрийн алдааны мессеж.
  */
 class AppError extends Error {
   constructor(status, message, details) {
     super(message);
-    this.name = 'AppError';
     this.status = status;
     this.details = details;
   }
 }
 
-module.exports = { AppError };
+const badRequest = (message, details) => new AppError(400, message, details);
+const forbidden = (message = 'Хандах эрхгүй (Access denied)') => new AppError(403, message);
+const notFound = (message = 'Олдсонгүй') => new AppError(404, message);
+const conflict = (message, details) => new AppError(409, message, details);
+
+/** Form-ын талбарын алдаа: { field: message } */
+const invalid = (details, message = 'Form-ын мэдээлэл буруу байна') => new AppError(400, message, details);
+
+module.exports = { AppError, badRequest, forbidden, notFound, conflict, invalid };

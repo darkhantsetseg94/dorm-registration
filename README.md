@@ -1,109 +1,212 @@
-# Оюутны дотуур байрны бүртгэлийн систем (ОДБ)
+# ОДБ — Оюутны дотуур байрны бүртгэлийн систем
+
+F.CSA316 – Программ хангамж хөгжүүлэлтийн процесс · 4-р баг
+
+Оюутан дотуур байранд суух хүсэлтээ цахимаар илгээж, явцаа хянана. Ажилтан хүсэлтийг
+шийдвэрлэж, өрөө хуваарилж, байр, өрөө, хэрэглэгч, мэдээллээ нэг дороос удирдана.
+
+Манай сургууль **нэг дотуур байртай** (холимог, 5 давхар, 60 өрөө, 240 ор). Хүсэлт авч буй
+ганц байр байгаа үед оюутан байр сонгохгүй — систем автоматаар онооно. Ажилтан байр нэмбэл
+сонголт дахин гарч ирнэ.
 
 ![CI](https://github.com/darkhantsetseg94/dorm-registration/actions/workflows/ci.yml/badge.svg)
 
-F.CSA316 — Программ хангамж хөгжүүлэлтийн процесс · 4-р баг (Н. Батболд, О. Баттөмөр, А. Дарханцэцэг)
+Лабын төлөв Git tag-аар: `lab5` (US-01), `lab8` (CI), `lab11` (REST API, CRUD).
 
-Энэ repo нь лабораторийн ажлуудын кодыг агуулна:
-
-- **Лаб 5 — US-01:** оюутан системд нэвтэрч, дотуур байранд суух хүсэлтээ цахимаар илгээх, илгээсэн хүсэлтээ «Хүлээгдэж буй» төлөвтэйгөөр харах.
-- **Лаб 8 — Continuous Integration:** push болон pull request бүрд GitHub Actions автоматаар build хийж, тест ажиллуулна.
-- **Лаб 11 — REST API / CRUD:** оюутан хүсэлтээ засах (PATCH), цуцлах (DELETE → CANCELLED); ажилтан ирсэн хүсэлтийг жагсааж, зөвшөөрөх / татгалзах (US-05). Backend-ийг route → controller → service → model давхаргад хуваасан.
-
-Лаб бүрийн эцсийн төлөвийг `lab5`, `lab8`, `lab11` Git tag-аар тэмдэглэнэ.
-
-Дотуур байр **нэг байртай** тул хүсэлт илгээхэд байр сонгохгүй; оюутан утас, яаралтай үед холбогдох хүн, шалтгаанаа бөглөнө.
+**Үндсэн User Story — US-01:** Оюутны хувьд би дотуур байранд суух хүсэлтээ цахимаар
+илгээхийг хүсэж байна, ингэснээр сургууль дээр биеэр очиж цаас бөглөхгүйгээр байранд
+хамрагдах боломжтой болно.
 
 ## Технологи
 
-| Хэсэг | Хэрэгсэл |
-| --- | --- |
-| Backend | Node.js 20+, Express 4 |
-| Өгөгдлийн сан | SQLite (better-sqlite3) |
-| Frontend | HTML, CSS, JavaScript |
-| Security | bcryptjs, express-session, helmet, express-rate-limit |
-| Тест | Jest, Supertest |
-| CI | GitHub Actions |
+| Зориулалт | Хэрэгсэл |
+|---|---|
+| Backend | Node.js 22, Express 4 |
+| Database | SQLite (better-sqlite3), автомат migration |
+| Frontend | HTML, CSS, JavaScript (ES modules, framework-гүй) |
+| Фонт | Golos Text (OFL лиценз, `src/public/fonts`-д байгаа — интернэтгүй ажиллана) |
+| Security | bcryptjs, express-session (SQLite store), helmet, express-rate-limit |
+| Test | Jest, Supertest (106 тест) |
+| CI | GitHub Actions (Node 20, 22) |
 
 ## Суулгах, ажиллуулах
 
-```bash
-npm install
-cp .env.example .env        # SESSION_SECRET, DEMO_PASSWORD-ийг өөрчилнө
-npm run seed                # 3 demo хэрэглэгч үүсгэнэ
-npm start                   # http://localhost:3000
-npm test                    # автомат тестүүд
+1. Хамаарлуудыг суулгана:
+   ```bash
+   npm install
+   ```
+2. `.env` файл бэлдэнэ (байхгүй бол):
+   ```bash
+   cp .env.example .env      # SESSION_SECRET-ийг урт санамсаргүй утгаар солино
+   ```
+3. Demo өгөгдөл оруулна (1 байр, 60 өрөө, 27 хэрэглэгч, жишээ хүсэлтүүд):
+   ```bash
+   npm run seed
+   ```
+4. Серверийг асаана → http://localhost:3000
+   ```bash
+   npm start                 # эсвэл: npm run dev (файл өөрчлөхөд дахин асна)
+   ```
+5. Тест ажиллуулна:
+   ```bash
+   npm test
+   ```
+
+Өгөгдлийн санг бүрэн цэвэрлээд дахин эхлүүлэх бол: `npm run db:reset`
+
+> **Хуучин хувилбараас шилжих:** өмнөх `database/odb.db` файлаа хэвээр үлдээж болно.
+> Сервер асахдаа бүтцийг автоматаар шинэчилнэ (өгөгдөл устахгүй). Дараа нь `npm run seed`
+> ажиллуулбал өрөө, жишээ өгөгдөл нэмэгдэнэ.
+
+### Demo хэрэглэгч
+
+Нууц үг нь `.env`-ийн `DEMO_PASSWORD` (анхдагч: `Odb@2026demo`). Нэвтрэх хуудасны
+"Туршилтын бүртгэл" хэсгээс дарж бөглөж болно (production-д харагдахгүй).
+
+| Нэвтрэх нэр | Эрх | Төлөв |
+|---|---|---|
+| `B221910001` | оюутан, эрэгтэй | хүсэлт илгээгээгүй — US-01-ийг туршихад |
+| `B221910002` | оюутан, эмэгтэй | хүсэлт илгээгээгүй |
+| `B221910003` | оюутан, эрэгтэй | зөвшөөрөгдсөн, 201 тоот өрөө |
+| `B221910014` | оюутан, эмэгтэй | хүлээгдэж буй хүсэлттэй |
+| `B221910013` | оюутан, эрэгтэй | татгалзсан (өмнөх жилийн түүхтэй) |
+| `staff01` | ажилтан | бүх удирдлага |
+
+## Боломжууд
+
+### Оюутан
+- **Бүртгүүлэх** — оюутны кодоороо өөрөө бүртгүүлнэ (ажилтан хааж болно)
+- **Хүсэлт илгээх (US-01)** — 3 алхам: байрны мэдээлэл → мэдээлэл бөглөх → хянаж илгээх
+  - Нэг байртай тул байр автоматаар сонгогдоно; сул орны тоо, сарын төлбөр, хаяг харагдана
+  - Аймаг, курс, давуу эрх (орон нутаг, өнчин, хөгжлийн бэрхшээлтэй г.м.)
+  - Бөглөж байсан ноорог хөтөч дээр хадгалагдана
+- **Хүсэлтээ засах, цуцлах** — шийдвэр гарахаас өмнө; цуцалсны дараа дахин илгээж болно
+- **Нүүр хуудас** — хүсэлтийн явц (timeline), зөвшөөрөгдвөл өрөөний "түлхүүрийн шошго"
+- **Мэдэгдэл** — зөвшөөрөх, татгалзах, өрөө хуваарилахад хонх дээр мэдэгдэл ирнэ
+- **Мэдээлэл** — ажилтны нийтэлсэн зарлал
+- **Профайл** — имэйл, утас засах, нууц үг солих, цайвар/бараан горим
+
+### Ажилтан
+- **Хянах самбар** — нийт/хүлээгдэж буй/зөвшөөрсөн тоо, сул ор, байрны дүүргэлт,
+  14 хоногийн хүсэлтийн график, аймгаар, давуу эрхээр
+- **Хүсэлтүүд** — хайлт (кирилл), төлөв/байр/жилээр шүүх, эрэмбэлэх, хуудаслах, CSV (Excel) татах
+  - Дэлгэрэнгүй самбараас **зөвшөөрөх** (өрөө сонгогч — хагас дүүрсэн тохирох өрөөг
+    автоматаар санал болгоно), **татгалзах** (шалтгаан заавал), **өрөө солих**, **шийдвэр буцаах**
+- **Байр, өрөө** — байр нэмэх/засах/хаах, давхрын зураглал (ор бүр харагдана),
+  олон өрөө нэг дор үүсгэх (101…108, 201…208), өрөөний оршин суугчид
+- **Хэрэглэгчид** — нэмэх, засах, идэвхгүй болгох, нууц үг шинэчлэх
+- **Мэдээлэл** — зарлал нийтлэх, онцлох, хэнд харагдахыг сонгох
+- **Тохиргоо** — хүсэлт авах эсэх, эхлэх/дуусах огноо, оюутан өөрөө бүртгүүлэх эсэх
+
+### Бизнесийн дүрэм
+- Нэг оюутан нэг хичээлийн жилд нэг идэвхтэй хүсэлт (8-р сараас шинэ жил эхэлнэ)
+- Байрны багтаамжаас хэтэрч зөвшөөрөхгүй; өрөөний орны тооноос хэтэрч хуваарилахгүй
+- Байр холимог: 1–2 давхарт эрэгтэй, 3–4 давхарт эмэгтэй; нэг өрөөнд өөр хүйсийн оюутан байрлуулахгүй
+- Оюутан байрлаж буй өрөөг устгах, багтаамжийг бууруулах боломжгүй
+- Хүсэлт ирсэн байрыг устгахгүй — "Хүсэлт хүлээн авахгүй" болгоно
+- Шийдвэр бүр түүхэнд (`application_events`) бичигдэнэ
+
+## Бүтэц
+
 ```
-
-Windows PowerShell дээр `cp`-ийн оронд `copy .env.example .env` ашиглана.
-
-> **Өмнөх хувилбарын өгөгдлийн сантай бол:** хүснэгтийн бүтэц өөрчлөгдсөн (олон байр → нэг байр) тул `data` хавтсыг устгаад `npm run seed`-ийг дахин ажиллуулна. Сервер хуучин бүтэцтэй өгөгдлийн санг илрүүлбэл энэ тухай мессеж гаргана.
-
-Demo хэрэглэгч (нууц үг нь `.env` доторх `DEMO_PASSWORD`):
-
-| Нэвтрэх нэр | Үүрэг |
-| --- | --- |
-| B221910001 | Эрэгтэй оюутан |
-| B221910002 | Эмэгтэй оюутан |
-| staff01 | Ажилтан |
-
-## Кодын бүтэц
-
-```text
-src/
-├── app.js                  Express app, middleware
-├── server.js               Сервер эхлүүлэх
-├── config.js               .env-ээс тохиргоо унших
-├── errors.js               AppError класс
-├── db/database.js          SQLite холболт, schema
-├── middleware/             requireAuth, requireRole, errorHandler
-├── validators/             Нэвтрэх ба хүсэлтийн form шалгах
-├── routes/                 URL + method → middleware, controller
-├── controllers/            HTTP хүсэлт → service → JSON хариу
-├── services/               Бизнесийн дүрэм (эрх, төлөвийн шилжилт)
-├── models/                 SQL query (prepared statement)
-└── public/                 login, dashboard, apply хуудас
-database/                   schema.sql, seed.js
-tests/                      Jest тестүүд
-.github/workflows/ci.yml    CI тохиргоо
+dorm-registration/
+├── src/
+│   ├── app.js                  Express app (middleware, route холболт)
+│   ├── server.js               сервер эхлүүлэх
+│   ├── config.js               .env-ээс тохиргоо унших
+│   ├── constants.js            төлөв, аймаг, давуу эрхийн жагсаалт (frontend /api/meta-аар авна)
+│   ├── errors.js               AppError класс
+│   ├── db/                     database.js, migrations.js, sessionStore.js
+│   ├── middleware/             auth.js (нэвтрэлт, эрх, хуудас хамгаалалт), errorHandler.js
+│   ├── validators/             authValidator.js, applicationValidator.js, adminValidator.js, common.js
+│   ├── services/               бизнес логик: application, dorm, user, notification, announcement, settings, stats
+│   ├── routes/                 authRoutes, applicationRoutes, accountRoutes, adminRoutes, query.js
+│   ├── utils/                  time.js, csv.js, asyncHandler.js
+│   └── public/                 HTML хуудсууд
+│       ├── css/style.css       дизайн систем (өнгө, үсэг, бүрэлдэхүүн, бараан горим)
+│       ├── js/core/            api, dom, ui, layout, icons, format, rules, room-picker
+│       ├── js/pages/           хуудас бүрийн JS
+│       └── admin/              ажилтны хуудсууд
+├── database/                   schema.sql, seed.js
+├── tests/                      9 файл, 106 тест
+├── .github/workflows/ci.yml    CI (push, pull request бүрд)
+├── .env.example
+└── README.md
 ```
 
 ## API
 
-| Method | Endpoint | Эрх | Үүрэг |
-| --- | --- | --- | --- |
-| POST | /api/auth/login | Бүгд | Нэвтрэх |
-| POST | /api/auth/logout | Нэвтэрсэн | Гарах |
-| GET | /api/auth/me | Нэвтэрсэн | Одоогийн хэрэглэгч |
-| GET | /api/applications | Нэвтэрсэн | Оюутан: өөрийнх · Ажилтан: бүгд (`?status=PENDING`) |
-| GET | /api/applications/my | student | Өөрийн хүсэлтүүд |
-| POST | /api/applications | student | Хүсэлт илгээх (US-01) → 201 |
-| GET | /api/applications/:id | Эзэмшигч, staff | Хүсэлтийн дэлгэрэнгүй → 200 / 404 |
-| PATCH | /api/applications/:id | Эзэмшигч | PENDING хүсэлтийн талбар засах → 200 |
-| PATCH | /api/applications/:id | staff | `{"status":"APPROVED"}` эсвэл `{"status":"REJECTED","reviewNote":"…"}` (US-05) → 200 |
-| DELETE | /api/applications/:id | Эзэмшигч | PENDING хүсэлтийг цуцлах (CANCELLED) → 204 |
+`🔓` нэвтрэхгүй, `👤` нэвтэрсэн, `🎓` оюутан, `🛠` ажилтан
 
-Хүсэлтийн төлөв: `PENDING` → `APPROVED` / `REJECTED` (ажилтан) эсвэл `CANCELLED` (оюутан). Шийдвэрлэгдсэн хүсэлтийг засах, цуцлахад `409 Conflict`. Цуцалсан хүсэлт тооцогдохгүй тул тухайн хичээлийн жилд дахин хүсэлт илгээх боломжтой.
+| Method | Endpoint | Эрх | Тайлбар |
+|---|---|---|---|
+| POST | `/api/auth/login` | 🔓 | Нэвтрэх |
+| POST | `/api/auth/register` | 🔓 | Оюутан бүртгүүлэх |
+| POST | `/api/auth/logout` | 👤 | Гарах |
+| GET | `/api/auth/me` | 👤 | Одоогийн хэрэглэгч |
+| GET | `/api/meta` | 🔓 | Жагсаалтууд, хүсэлт авах хугацаа |
+| GET | `/api/dormitories` | 👤 | Байрны жагсаалт (сул ортой) |
+| POST | `/api/applications` | 🎓 | Хүсэлт илгээх (US-01) |
+| GET | `/api/applications/my` | 🎓 | Өөрийн хүсэлтүүд |
+| GET | `/api/applications/:id` | эзэмшигч / 🛠 | Дэлгэрэнгүй + түүх |
+| PUT | `/api/applications/:id` | 🎓 | Хүлээгдэж буй хүсэлтээ бүтнээр засах (wizard) |
+| PATCH | `/api/applications/:id` | 🎓 | Зөвхөн өгсөн талбарыг засах (Лаб 11) |
+| POST | `/api/applications/:id/cancel` | 🎓 | Цуцлах |
+| DELETE | `/api/applications/:id` | 🎓 | Цуцлах → 204, CANCELLED төлөвт (физик устгал биш, Лаб 11) |
+| GET, PATCH | `/api/profile` | 👤 | Профайл харах, засах |
+| POST | `/api/profile/password` | 👤 | Нууц үг солих |
+| GET | `/api/notifications` | 👤 | Мэдэгдэл |
+| POST | `/api/notifications/:id/read`, `/read-all` | 👤 | Уншсан болгох |
+| GET | `/api/announcements` | 👤 | Мэдээлэл |
+| GET | `/api/admin/stats` | 🛠 | Хянах самбарын статистик |
+| GET | `/api/admin/applications` | 🛠 | Жагсаалт (`status, dormId, year, q, sort, page`) |
+| GET | `/api/admin/applications/export` | 🛠 | CSV татах |
+| GET | `/api/admin/applications/:id/rooms` | 🛠 | Өрөөний сонголт, санал |
+| POST | `/api/admin/applications/:id/approve` | 🛠 | Зөвшөөрөх (`roomId`, `note`) |
+| POST | `/api/admin/applications/:id/reject` | 🛠 | Татгалзах (`note` заавал) |
+| POST | `/api/admin/applications/:id/room` | 🛠 | Өрөө солих / цуцлах |
+| POST | `/api/admin/applications/:id/reopen` | 🛠 | Шийдвэр буцаах |
+| GET, POST | `/api/admin/dorms` | 🛠 | Байр |
+| PUT, DELETE | `/api/admin/dorms/:id` | 🛠 | Байр засах, устгах |
+| GET, POST | `/api/admin/dorms/:id/rooms` | 🛠 | Өрөөнүүд + оршин суугчид, өрөө нэмэх |
+| POST | `/api/admin/dorms/:id/rooms/bulk` | 🛠 | Олон өрөө үүсгэх |
+| PUT, DELETE | `/api/admin/rooms/:id` | 🛠 | Өрөө засах, устгах |
+| GET, POST | `/api/admin/users` | 🛠 | Хэрэглэгчид |
+| PUT | `/api/admin/users/:id` | 🛠 | Засах, идэвхгүй болгох |
+| POST | `/api/admin/users/:id/password` | 🛠 | Нууц үг шинэчлэх |
+| GET, POST | `/api/admin/announcements` | 🛠 | Мэдээлэл |
+| PUT, DELETE | `/api/admin/announcements/:id` | 🛠 | Мэдээлэл засах, устгах |
+| GET, PUT | `/api/admin/settings` | 🛠 | Тохиргоо |
 
-## Security
+## Аюулгүй байдал
 
-- Нууц үгийг bcrypt hash-аар хадгална (хэрэглэгч бүрт тусдаа salt).
-- Session cookie: HttpOnly, SameSite=Strict, production-д Secure; нэвтрэх бүрд session ID шинэчилнэ.
-- 15 минутад 5 амжилтгүй нэвтрэх оролдлогын хязгаар (brute-force).
-- Бүх SQL query parameterized (prepared statement).
-- Input validation (whitelist талбар, regex, урт); HTML/`javascript:` агуулсан текстийг татгалзана.
-- Frontend өгөгдлийг `textContent`-оор харуулна; helmet CSP header.
-- Оюутан зөвхөн өөрийн хүсэлтийг харна (IDOR хамгаалалт).
-- Алдааны мессежид stack trace, SQL алдаа харуулахгүй.
+- Нууц үгийг bcrypt hash-аар хадгална; нууц үгийн бодлого: 8+ тэмдэгт, үсэг ба тоо
+- Session cookie: `HttpOnly`, `SameSite=Strict`, production-д `Secure`; нэвтрэхэд session ID шинэчилнэ
+- Session SQLite-д хадгалагдана; нууц үг солиход бусад төхөөрөмж, идэвхгүй болгоход бүх session устна
+- Нэвтрэлтэд 15 минутад 5 буруу оролдлого, бүртгэлд цагт 10 бүртгэлийн хязгаар
+- Бүх SQL parameterized; эрэмбэ, шүүлтийн утгыг whitelist-ээр шалгана; `%`, `_`-г LIKE-д escape хийнэ
+- Input validation (whitelist) сервер дээр; хөтөч дээр ижил дүрмээр урьдчилан шалгана
+- Frontend-д бүх хэрэглэгчийн текст `textContent`-оор орно (XSS); inline script, `onclick` байхгүй
+- Helmet CSP (`script-src 'self'`), HTTPS-гүй орчинд `upgrade-insecure-requests` унтраалттай
+- Role + эзэмшигчийн шалгалт (IDOR); ажилтны хуудсууд сервер талд хамгаалагдсан
+- CSV экспортод Excel томьёо (CSV injection) ажиллахаас сэргийлнэ
+- `?next=` redirect зөвхөн энэ сайтын хаяг руу (open redirect хамгаалалт)
+- Алдааны хариунд stack trace, SQL алдаа харуулахгүй; нууц утгууд `.env`-д
 
-## Continuous Integration
+## Тест
 
-`.github/workflows/ci.yml` нь `main`, `develop`, `feature/**`, `ci/**` салбарт push хийх болон `main`/`develop` руу pull request нээх бүрд ажиллана.
-
-Алхмууд: код татах → Node.js (20, 22) суулгах → `npm ci` → better-sqlite3 шалгах → JS syntax шалгах → `npm test`.
-
-Нэг тест унавал workflow улаан болж, branch protection-оор `main`-д нэгтгэх боломжгүй болно. Локал дээр CI-тэй ижил шалгалт хийх:
-
-```bash
-npm ci && npm test
 ```
+npm test
+```
+
+| Файл | Хамрах хүрээ |
+|---|---|
+| `auth.test.js` | TC01, 05, 07, 10, 13, 15, 16 — нэвтрэлт, brute-force, header |
+| `application.test.js` | TC02–TC17 — US-01 хүсэлт илгээх (анхны тестүүд, өөрчлөөгүй) |
+| `account.test.js` | TC18–TC29 — бүртгүүлэх, профайл, нууц үг, session, хуудас хамгаалалт |
+| `lifecycle.test.js` | TC30–TC39 — нэмэлт талбар, засах, цуцлах, хугацаа, дүүрсэн байр |
+| `admin.test.js` | TC40–TC51 — шийдвэрлэх, өрөө хуваарилах, хүйсийн дүрэм, шүүлт, CSV, статистик |
+| `management.test.js` | TC52–TC59 — байр, өрөө, хэрэглэгч, мэдээлэл, тохиргоо |
+| `migration.test.js` | TC60–TC61 — хуучин өгөгдлийн санг шинэчлэх |
+| `pages.test.js` | TC62–TC65 — 404, нийтийн API, CSP |
+| `lab11.test.js` | TC-01…TC-06 — REST CRUD (PATCH, DELETE), нэг байрны загвар |
